@@ -1,0 +1,10 @@
+set project_name = "break"
+set source_directory = "src"
+set source_files = ["main.c"]
+
+set c_compiler = "clang"
+
+set configs = [
+    {"debug", "-g -O0 -Wall -Werror"},
+    {"release", "-O3 -DNDEBUG"}
+]
