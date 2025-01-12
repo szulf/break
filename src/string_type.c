@@ -64,6 +64,18 @@ int string_reassign(string_type* str, const char* s)
     return 0;
 }
 
+void string_clear(string_type* str)
+{
+    free(str->str);
+    str->length = 0;
+    str->str = NULL;
+}
+
+bool string_empty(string_type* str)
+{
+    return str->str == NULL && str->length == 0;
+}
+
 // Usage example
 // int main()
 // {
@@ -77,6 +89,9 @@ int string_reassign(string_type* str, const char* s)
 //
 //     string_reassign(&s, "test");
 //     printf("%s\n", s.str);
+//
+//     string_clear(&s);
+//     printf("%d\n", string_empty(&s));
 //
 //     string_free(&s);
 //     return 0;

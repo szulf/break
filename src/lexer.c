@@ -7,7 +7,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-void error(int32_t line, const char* message)
+static void error(int32_t line, const char* message)
 {
     printf("Error at line %d: %s\n", line, message);
 }
@@ -57,14 +57,44 @@ static token_type tokenize_string(char buf[512], int32_t* pos, int32_t line)
 
 static token_type tokenize_identifier(char buf[512], int32_t* pos, int32_t line)
 {
-    token_type tt = {};
+    char c = buf[*pos];
+    int32_t i = 0;
+    while (isalpha(c) || c == '_')
+    {
+        i++;
+        c = buf[i + *pos];
+    }
+
+    char val[512];
+    memset(val, 0, 512);
+
+    strncpy(val, buf + *pos, i);
+
+    *pos += i;
+
+    token_type tt;
+    if (strcmp(val, "set") == 0)
+    {
+        tt.tc = SET;
+        tt.lexeme = STRING_EMPTY;
+    }
+    else if (strcmp(val, "var") == 0)
+    {
+        tt.tc = VAR;
+        tt.lexeme = STRING_EMPTY;
+    }
+    else
+    {
+        tt.tc = IDENTIFIER;
+        string_type st;
+        string_new(&st, val);
+        tt.lexeme = st;
+    }
+    tt.line = line;
 
     return tt;
 }
 
-// TODO
-// remove the strings from tokens
-// purely a testing thing
 list_type scan_tokens(FILE* fptr)
 {
     list_type tokens;
@@ -86,41 +116,35 @@ list_type scan_tokens(FILE* fptr)
             switch (c)
             {
                 case '[': {
-                    string_type st;
-                    string_new(&st, "left square");
-                    token_type tt = {LEFT_SQUARE, st, 0};
+                    token_type tt = {LEFT_SQUARE, STRING_EMPTY, 0};
                     list_append(&tokens, &tt);
                     break;
                 }
                 case ']': {
-                    string_type st;
-                    string_new(&st, "right square");
-                    token_type tt = {RIGHT_SQUARE, st, 0};
+                    token_type tt = {RIGHT_SQUARE, STRING_EMPTY, 0};
                     list_append(&tokens, &tt);
                     break;
                 }
                 case '{': {
-                    string_type st;
-                    string_new(&st, "left brace");
-                    token_type tt = {LEFT_BRACE, st, 0};
+                    token_type tt = {LEFT_BRACE, STRING_EMPTY, 0};
                     list_append(&tokens, &tt);
                     break;
                 }
                 case '}': {
-                    string_type st;
-                    string_new(&st, "right brace");
-                    token_type tt = {RIGHT_BRACE, st, 0};
+                    token_type tt = {RIGHT_BRACE, STRING_EMPTY, 0};
                     list_append(&tokens, &tt);
                     break;
                 }
                 case '=': {
-                    string_type st;
-                    string_new(&st, "equal");
-                    token_type tt = {EQUAL, st, 0};
+                    token_type tt = {EQUAL, STRING_EMPTY, 0};
                     list_append(&tokens, &tt);
                     break;
                 }
-
+                case ',': {
+                    token_type tt = {COMMA, STRING_EMPTY, 0};
+                    list_append(&tokens, &tt);
+                    break;
+                }
                 case '"': {
                     token_type tt = tokenize_string(buf, &current, line);
                     list_append(&tokens, &tt);
@@ -140,12 +164,13 @@ list_type scan_tokens(FILE* fptr)
                 default: {
                     if (isalpha(c))
                     {
-                        tokenize_identifier(buf, &current, line);
+                        token_type tt = tokenize_identifier(buf, &current, line);
+                        list_append(&tokens, &tt);
                     }
-                    // else
-                    // {
-                    //     error(0, "unexpected character");
-                    // }
+                    else
+                    {
+                        error(line, "unexpected character");
+                    }
                     break;
                 }
             }
@@ -160,22 +185,29 @@ list_type scan_tokens(FILE* fptr)
     return tokens;
 }
 
-int main()
-{
-    FILE* fptr = fopen("breakfile", "r");
-
-    list_type lt = scan_tokens(fptr);
-    for (size_t i = 0; i < lt.length; i++)
-    {
-        printf("%s\n", ((token_type*) list_get(&lt, i))->lexeme.str);
-    }
-
-    for (size_t i = 0; i < lt.length; i++)
-    {
-        string_free(&((token_type*) list_get(&lt, i))->lexeme);
-    }
-    list_free(&lt);
-
-    fclose(fptr);
-    return 0;
-}
+// Usage example
+// int main()
+// {
+//     FILE* fptr = fopen("breakfile", "r");
+//
+//     list_type lt = scan_tokens(fptr);
+//     for (size_t i = 0; i < lt.length; i++)
+//     {
+//         if (!string_empty(&((token_type*) list_get(&lt, i))->lexeme))
+//         {
+//             printf("%s\n", ((token_type*) list_get(&lt, i))->lexeme.str);
+//         }
+//     }
+//
+//     for (size_t i = 0; i < lt.length; i++)
+//     {
+//         if (!string_empty(&((token_type*) list_get(&lt, i))->lexeme))
+//         {
+//             string_free(&((token_type*) list_get(&lt, i))->lexeme);
+//         }
+//     }
+//     list_free(&lt);
+//
+//     fclose(fptr);
+//     return 0;
+// }

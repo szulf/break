@@ -77,14 +77,15 @@ int main(int argc, char** argv)
             return 1;
         }
 
-        // TODO
-        // create a breakfile here
-        // with the default template
         FILE* fptr = fopen("breakfile", "w");
 
         fprintf(fptr, "project_name := %s\n", argv[2]);
         fprintf(fptr, "source_directory := src\n");
-        fprintf(fptr, "source_files := [main.c]\n");
+        fprintf(fptr, "source_files := [main.c]\n\n");
+        fprintf(fptr, "set configs = [\n");
+        fprintf(fptr, "    {\"debug\", \"-g -O0 -Wall -Werror\"},\n");
+        fprintf(fptr, "    {\"release\", \"-O3 -DNDEBUG\"},\n");
+        fprintf(fptr, "]");
 
         fclose(fptr);
     }
