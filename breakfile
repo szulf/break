@@ -1,6 +1,6 @@
-project_name := break
-source_directory := src
-source_files := [main.c]
+set project_name = "break"
+set source_directory = "src"
+set source_files = ["main.c"]
 
 set configs = [
     {"debug", "-g -O0 -Wall -Werror"},

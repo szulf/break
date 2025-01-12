@@ -77,15 +77,22 @@ int main(int argc, char** argv)
             return 1;
         }
 
+        struct stat stats;
+        if (stat("breakfile", &stats) == 0)
+        {
+            printf("breakfile already exists\n");
+            printf("please delete the breakfile before going futher\n");
+        }
+
         FILE* fptr = fopen("breakfile", "w");
 
-        fprintf(fptr, "project_name := %s\n", argv[2]);
-        fprintf(fptr, "source_directory := src\n");
-        fprintf(fptr, "source_files := [main.c]\n\n");
+        fprintf(fptr, "set project_name = \"%s\"\n", argv[2]);
+        fprintf(fptr, "set source_directory = \"src\"\n");
+        fprintf(fptr, "set source_files = [\"main.c\"]\n\n");
         fprintf(fptr, "set configs = [\n");
         fprintf(fptr, "    {\"debug\", \"-g -O0 -Wall -Werror\"},\n");
         fprintf(fptr, "    {\"release\", \"-O3 -DNDEBUG\"},\n");
-        fprintf(fptr, "]");
+        fprintf(fptr, "]\n");
 
         fclose(fptr);
     }
