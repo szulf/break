@@ -51,14 +51,16 @@ int main(int argc, char** argv)
 
         std::ofstream breakfile{"break.json"};
 
-        std::println(breakfile, "{{");
-        std::println(breakfile, "    \"project_name\": \"{}\",", argv[2]);
-        std::println(breakfile, "    \"source_files\": [ \"src/main.cpp\" ],\n");
-        std::println(breakfile, "    \"configs\": [");
-        std::println(breakfile, "        {{ \"debug\": \"-O0 -g -Wall -Werror\" }},");
-        std::println(breakfile, "        {{ \"release\": \"-O3 -DNDEBUG\" }},");
-        std::println(breakfile, "    ],");
-        std::println(breakfile, "}}");
+        std::println(breakfile,
+                "{{\n"
+                "    \"project_name\": \"{}\",\n"
+                "    \"source_files\": [ \"src/main.cpp\" ],\n\n"
+                "    \"configs\": [\n"
+                "        {{ \"debug\": \"-O0 -g -Wall -Werror\" }},\n"
+                "        {{ \"release\": \"-O3 -DNDEBUG\" }},\n"
+                "    ],\n"
+                "}}"
+                , args[2]);
     }
     else if (args[1] == "build")
     {

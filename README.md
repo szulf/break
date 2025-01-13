@@ -18,6 +18,7 @@ compiles all files and runs the program
 
 ### breakfile syntax
 json
+switched because i think it is better to use a standardized syntax then create my own
 
 ### todo
 - add cli commands to change the breakfile  
