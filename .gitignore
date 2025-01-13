@@ -1,2 +1,4 @@
-lexer
+test
 break
+compile_commands.json
+.cache/

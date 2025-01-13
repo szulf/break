@@ -1,0 +1,9 @@
+{
+    "project_name": "break",
+    "source_files": [ "src/main.cpp" ],
+
+    "configs": [
+        { "debug": "-O0 -g -Wall -Werror" },
+        { "release": "-O3 -DNDEBUG" },
+    ],
+}
