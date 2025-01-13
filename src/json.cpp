@@ -106,6 +106,17 @@ static auto parse_bool(const std::string& source, size_t& pos) -> Json
     throw std::runtime_error{"Invalid boolean format"};
 }
 
+static inline auto parse_null(const std::string& source, size_t& pos) -> Json
+{
+    if (source.substr(pos, 4) == "null")
+    {
+        pos += 4;
+        return Json{nullptr};
+    }
+
+    throw std::runtime_error{"invalid null format"};
+}
+
 auto decode(const std::string& source, size_t pos) -> Json
 {
     bool is_first{pos == 0};
@@ -140,7 +151,7 @@ auto decode(const std::string& source, size_t pos) -> Json
             }
             else
             {
-                throw new std::runtime_error{"Invalid json syntax"};
+                throw std::runtime_error{"Invalid json syntax: number"};
             }
         }
         return temp;
@@ -158,7 +169,7 @@ auto decode(const std::string& source, size_t pos) -> Json
             }
             else
             {
-                throw new std::runtime_error{"Invalid json syntax"};
+                throw std::runtime_error{"Invalid json syntax: bool"};
             }
         }
         return temp;
@@ -167,7 +178,19 @@ auto decode(const std::string& source, size_t pos) -> Json
     // null
     if (source.substr(pos, 4) == "null")
     {
-
+        Json temp = parse_null(source, pos);
+        if (is_first)
+        {
+            if (pos + 1 == source.length())
+            {
+                return temp;
+            }
+            else
+            {
+                throw std::runtime_error{"Invalid json syntax: null"};
+            }
+        }
+        return temp;
     }
 
     throw std::runtime_error{"Invalid json syntax"};
