@@ -5,39 +5,6 @@
 #include <sstream>
 #include <string>
 
-static void printJson(const json::Json& json) {
-    // Use std::visit to handle the variant
-    std::visit([](const auto& val) {
-        using T = std::decay_t<decltype(val)>;
-        if constexpr (std::is_same_v<T, std::nullptr_t>) {
-            std::println("null");
-        } else if constexpr (std::is_same_v<T, bool>) {
-            std::println("{}", (val ? "true" : "false"));
-        } else if constexpr (std::is_same_v<T, int64_t>) {
-            std::println("{}", val);
-        } else if constexpr (std::is_same_v<T, double>) {
-            std::println("{}", val);
-        } else if constexpr (std::is_same_v<T, std::string>) {
-            std::println("\"{}\"", val);
-        } else if constexpr (std::is_same_v<T, std::unordered_map<std::string, json::Json>>) {
-            std::print("{{ ");
-            for (const auto& [key, value] : val) {
-                std::print("\"{}\"", key);
-                printJson(value);
-                std::print(", ");
-            }
-            std::println(" }}");
-        } else if constexpr (std::is_same_v<T, std::vector<json::Json>>) {
-            std::print("[ ");
-            for (const auto& item : val) {
-                printJson(item);
-                std::print(", ");
-            }
-            std::println("]");
-        }
-    }, json.value);
-}
-
 static auto load_file(const std::ifstream& file) -> std::string
 {
     std::stringstream ss;
@@ -51,7 +18,8 @@ int main(int argc, char** argv)
     std::string str = load_file(file);
     auto x = json::decode(str);
 
-    printJson(x);
+    json::print_json(x);
+    std::println();
 
     // std::vector<std::string> args{argv, argv + argc};
     //

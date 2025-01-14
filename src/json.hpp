@@ -21,7 +21,9 @@ struct Json
     > value;
 };
 
-auto decode(const std::string& source, size_t pos = 0) -> Json;
+auto print_json(const json::Json& json) -> void;
+auto decode(const std::string& source) -> Json;
+auto decode(const std::string& source, size_t& pos) -> Json;
 auto encode(const Json& json) -> std::string;
 
 }
