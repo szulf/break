@@ -6,7 +6,7 @@
 namespace json
 {
 
-static auto parse_number(const std::string& source, size_t& pos) -> Json
+static inline auto parse_number(const std::string& source, size_t& pos) -> Json
 {
     size_t start{pos};
     bool is_negative{false};
@@ -89,7 +89,7 @@ static auto parse_number(const std::string& source, size_t& pos) -> Json
     return Json{std::stod(source.substr(start, pos))};
 }
 
-static auto parse_bool(const std::string& source, size_t& pos) -> Json
+static inline auto parse_bool(const std::string& source, size_t& pos) -> Json
 {
     if (source.substr(pos, 4) == "true")
     {
@@ -117,6 +117,19 @@ static inline auto parse_null(const std::string& source, size_t& pos) -> Json
     throw std::runtime_error{"invalid null format"};
 }
 
+static inline auto parse_string(const std::string& source, size_t& pos) -> Json
+{
+    size_t start{pos + 1};
+    pos = source.find("\"", start);
+    if (pos == std::string::npos)
+    {
+        throw std::runtime_error{"Invalid string format: missing ending '\"'"};
+    }
+
+    pos += 1;
+    return Json{source.substr(start, pos - start - 1)};
+}
+
 auto decode(const std::string& source, size_t pos) -> Json
 {
     bool is_first{pos == 0};
@@ -136,7 +149,19 @@ auto decode(const std::string& source, size_t pos) -> Json
     // string
     if (source[pos] == '"')
     {
-
+        Json temp = parse_string(source, pos);
+        if (is_first)
+        {
+            if (pos + 1 == source.length())
+            {
+                return temp;
+            }
+            else
+            {
+                throw std::runtime_error{"Invalid json syntax: string"};
+            }
+        }
+        return temp;
     }
 
     // number
