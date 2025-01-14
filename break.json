@@ -4,6 +4,8 @@
 
     "configs": [
         { "debug": "-O0 -g -Wall -Werror" },
-        { "release": "-O3 -DNDEBUG" },
+        { "release": "-O3 -DNDEBUG" }
     ],
+
+    "export_compile_commands": true
 }
