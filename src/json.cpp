@@ -231,8 +231,6 @@ static inline auto parse_array(const std::string& source, size_t& pos) -> Json
         }
     }
 
-    pos += 1;
-
     return Json{jsons};
 }
 
@@ -256,17 +254,17 @@ auto decode(const std::string& source, size_t& pos) -> Json
     if (source[pos] == '[')
     {
         Json temp = parse_array(source, pos);
-        // if (is_first)
-        // {
-        //     if (pos + 1 == source.length())
-        //     {
-        //         return temp;
-        //     }
-        //     else
-        //     {
-        //         throw std::runtime_error{"Invalid json syntax: array"};
-        //     }
-        // }
+        if (is_first)
+        {
+            if (pos + 1 == source.length())
+            {
+                return temp;
+            }
+            else
+            {
+                throw std::runtime_error{"Invalid json syntax: array"};
+            }
+        }
         return temp;
     }
 
