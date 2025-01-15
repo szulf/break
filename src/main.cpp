@@ -14,11 +14,16 @@ static auto load_file(const std::ifstream& file) -> std::string
 
 int main(int argc, char** argv)
 {
-    std::ifstream file{"break.json"};
+    std::ifstream file{"test.json"};
     std::string str = load_file(file);
     auto x = json::decode(str);
+    if (!x)
+    {
+        std::println("{}", x.error());
+        return 1;
+    }
 
-    json::print_json(x);
+    json::print_json(x.value());
     std::println();
 
     // std::vector<std::string> args{argv, argv + argc};

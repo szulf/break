@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <variant>
 #include <vector>
+#include <expected>
 
 namespace json
 {
@@ -22,8 +23,8 @@ struct Json
 };
 
 auto print_json(const json::Json& json) -> void;
-auto decode(const std::string& source) -> Json;
-auto decode(const std::string& source, size_t& pos) -> Json;
+auto decode(const std::string& source) -> std::expected<Json, std::string>;
+auto decode(const std::string& source, size_t& pos, size_t& line) -> std::expected<Json, std::string>;
 auto encode(const Json& json) -> std::string;
 
 }
