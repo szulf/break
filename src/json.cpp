@@ -6,7 +6,6 @@ namespace json
 
 auto print_json(const json::Json& json) -> void
 {
-    // Use std::visit to handle the variant
     std::visit([](const auto& val)
     {
         using T = std::decay_t<decltype(val)>;
@@ -33,22 +32,31 @@ auto print_json(const json::Json& json) -> void
         else if constexpr (std::is_same_v<T, std::unordered_map<std::string, json::Json>>)
         {
             std::print("{{ ");
-            for (const auto& [key, value] : val)
+            for (size_t i = 0; const auto& [key, value] : val)
             {
                 std::print("\"{}\": ", key);
                 print_json(value);
-                std::print(", ");
+                if (i + 1 != val.size())
+                {
+                    std::print(",");
+                }
+                std::print(" ");
+                i++;
             }
             std::print(" }}");
         }
         else if constexpr (std::is_same_v<T, std::vector<json::Json>>)
         {
             std::print("[ ");
-            for (const auto& item : val)
+            for (size_t i = 0; const auto& item : val)
             {
                 print_json(item);
-                // sucks that it prints a trailing comma, but i aint gon fix it now
-                std::print(", ");
+                if (i + 1 != val.size())
+                {
+                    std::print(",");
+                }
+                i++;
+                std::print(" ");
             }
             std::print("]");
         }

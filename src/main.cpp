@@ -1,12 +1,14 @@
 #include "json.hpp"
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <print>
 #include <sstream>
 #include <string>
 
-static auto load_file(const std::ifstream& file) -> std::string
+static auto load_file(const std::filesystem::path& path) -> std::string
 {
+    std::ifstream file{path};
     std::stringstream ss;
     ss << file.rdbuf();
     return ss.str();
@@ -14,8 +16,7 @@ static auto load_file(const std::ifstream& file) -> std::string
 
 int main(int argc, char** argv)
 {
-    std::ifstream file{"test.json"};
-    std::string str = load_file(file);
+    std::string str = load_file("break.json");
     auto x = json::decode(str);
     if (!x)
     {
