@@ -14,7 +14,7 @@ static auto load_file(const std::ifstream& file) -> std::string
 
 int main(int argc, char** argv)
 {
-    std::ifstream file{"test.json"};
+    std::ifstream file{"break.json"};
     std::string str = load_file(file);
     auto x = json::decode(str);
 

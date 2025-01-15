@@ -1,30 +1,18 @@
-[
-    123                 ,
+{
+    "test": "xd",
+    "tesat": 12,
+    "test1": "xd",
+    "test2": "xd",
+    "test3": null,
+    "test4": false,
+    "test5": -13.59,
+    "test6": "xd",
 
-
-
-
-
-
-
-    false
-
-
-    ,
-    "test"
-
-
-
-                ,
-null,
-    123.12,
-
-    "break",
-
-
--12,   6456,
-
-
-
-457.123
-]
+    "array_test": [
+        "12",
+        122,
+        45.5,
+        false,
+        null
+    ]
+}

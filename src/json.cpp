@@ -2,6 +2,8 @@
 #include <cctype>
 #include <print>
 #include <stdexcept>
+#include <unordered_map>
+#include <variant>
 
 // TODO
 // change all std::runtime_errors into your own json_parsing_errors
@@ -40,7 +42,7 @@ auto print_json(const json::Json& json) -> void
             std::print("{{ ");
             for (const auto& [key, value] : val)
             {
-                std::print("\"{}\"", key);
+                std::print("\"{}\": ", key);
                 print_json(value);
                 std::print(", ");
             }
@@ -72,7 +74,7 @@ static inline auto parse_number(const std::string& source, size_t& pos) -> Json
 
     if (source[pos] == '-')
     {
-        pos++;
+        pos += 1;
         is_negative = true;
     }
 
@@ -80,7 +82,7 @@ static inline auto parse_number(const std::string& source, size_t& pos) -> Json
     {
         while (std::isdigit(source[pos]))
         {
-            pos++;
+            pos += 1;
         }
     }
     else
@@ -90,7 +92,7 @@ static inline auto parse_number(const std::string& source, size_t& pos) -> Json
 
     if (source[pos] == '.')
     {
-        pos++;
+        pos += 1;
     }
     else
     {
@@ -116,7 +118,7 @@ static inline auto parse_number(const std::string& source, size_t& pos) -> Json
     {
         while (std::isdigit(source[pos]))
         {
-            pos++;
+            pos += 1;
         }
     }
     else
@@ -226,7 +228,79 @@ static inline auto parse_array(const std::string& source, size_t& pos) -> Json
             }
             else
             {
-                throw std::runtime_error{"Invalid array format: missing ',' after an element"};
+                throw std::runtime_error{"Invalid array format: missing ',' after element"};
+            }
+        }
+    }
+
+    return Json{jsons};
+}
+
+static inline auto parse_object(const std::string& source, size_t& pos) -> Json
+{
+    std::unordered_map<std::string, Json> jsons{};
+
+    pos += 1;
+
+    while (source[pos] != '}')
+    {
+        std::string obj_key{};
+
+        skip_whitespace(source, pos);
+
+        if (source[pos] == '"')
+        {
+            // TODO
+            // maybe I should 'std::move' this
+            obj_key = std::get<std::string>(parse_string(source, pos).value);
+        }
+        else
+        {
+            throw std::runtime_error{"Invalid object format: missing key"};
+        }
+
+        skip_whitespace(source, pos);
+
+        if (source[pos] == ':')
+        {
+            pos += 1;
+        }
+        else
+        {
+            throw std::runtime_error{"Invalid object format: missing ':' after key"};
+        }
+
+        skip_whitespace(source, pos);
+
+        Json obj_val = decode(source, pos);
+
+        if (jsons.contains(obj_key))
+        {
+            throw std::runtime_error{"Invalid object format: duplicate key"};
+        }
+
+        jsons.emplace(obj_key, obj_val);
+
+        if (source[pos] == ',')
+        {
+            pos += 1;
+            skip_whitespace(source, pos);
+            if (source[pos] == '}')
+            {
+                throw std::runtime_error{"Invalid object format: trailing ','"};
+            }
+        }
+        else
+        {
+            skip_whitespace(source, pos);
+            if (source[pos] == '}')
+            {
+                pos += 1;
+                break;
+            }
+            else
+            {
+                throw std::runtime_error{"Invalid object format: missing ',' after entry"};
             }
         }
     }
@@ -247,7 +321,19 @@ auto decode(const std::string& source, size_t& pos) -> Json
     // object
     if (source[pos] == '{')
     {
-
+        Json temp = parse_object(source, pos);
+        if (is_first)
+        {
+            if (pos + 1 == source.length())
+            {
+                return temp;
+            }
+            else
+            {
+                throw std::runtime_error{"Invalid json syntax: object"};
+            }
+        }
+        return temp;
     }
 
     // array
