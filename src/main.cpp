@@ -14,6 +14,21 @@ static auto load_file(const std::filesystem::path& path) -> std::string
     return ss.str();
 }
 
+struct BuildConfig
+{
+    std::string config_name;
+    std::string config_flags;
+};
+
+struct BuildParams
+{
+    std::string project_name;
+    std::vector<std::string> source_files;
+    std::vector<std::string> header_files;
+    std::vector<BuildConfig> configs;
+    bool export_compile_commands;
+};
+
 int main(int argc, char** argv)
 {
     std::string str = load_file("break.json");

@@ -212,6 +212,13 @@ static inline auto parse_array(const std::string& source, size_t& pos, size_t& l
 
     pos += 1;
 
+    skip_whitespace(source, pos, line);
+    if (source[pos] == ']')
+    {
+        pos += 1;
+        return std::expected<Json, std::string>{jsons};
+    }
+
     while (source[pos] != ']')
     {
         skip_whitespace(source, pos, line);
@@ -257,6 +264,13 @@ static inline auto parse_object(const std::string& source, size_t& pos, size_t& 
     std::unordered_map<std::string, Json> jsons{};
 
     pos += 1;
+
+    skip_whitespace(source, pos, line);
+    if (source[pos] == '}')
+    {
+        pos += 1;
+        return std::expected<Json, std::string>{jsons};
+    }
 
     while (source[pos] != '}')
     {

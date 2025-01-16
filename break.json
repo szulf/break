@@ -1,6 +1,7 @@
 {
     "project_name": "break",
     "source_files": [ "src/main.cpp" ],
+    "header_files": [],
 
     "configs": [
         { "debug": "-O0 -g -Wall -Werror" },
