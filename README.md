@@ -2,6 +2,7 @@
 program interprets break.json  
 based on that runs the necessary compilation commands  
 and creates a '.break-cache' file that holds info about last modified change to a file
+defaults to using a cpp compiler unless file has a '.c' ending
 
 ### cli commands
 ` break init project-name `  
