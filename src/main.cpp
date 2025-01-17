@@ -32,11 +32,15 @@ int main(int argc, char** argv)
     // }
     // std::println("export_compile_commands: {}", p.value().export_compile_commands);
 
-    auto cmds = build::build_compile_commands(p.value(), p.value().configs[0]);
+    auto cmds = build::build_compile_commands(p.value(), p->configs[0]);
+    std::println("compilation cmds:");
     for (const auto& cmd : cmds)
     {
-        std::println("{}", cmd);
+        std::println("  {}", cmd);
     }
+
+    auto link_cmd = build::build_link_command(p.value());
+    std::println("link cmd:\n  {}", link_cmd);
 
     // std::vector<std::string> args{argv, argv + argc};
     //

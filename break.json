@@ -1,7 +1,7 @@
 {
     "project_name": "break",
-    "source_files": [ "src/main.cpp", "src/json.cpp" ],
-    "header_files": [ "src/json.hpp" ],
+    "source_files": [ "src/main.cpp", "src/json.cpp", "src/build.cpp" ],
+    "header_files": [ "src/json.hpp", "src/build.hpp" ],
 
     "cpp_flags": "-std=c++23",
 

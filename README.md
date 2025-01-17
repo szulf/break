@@ -19,7 +19,9 @@ compiles all files and runs the program
 
 ### breakfile syntax
 json  
-switched because i think it is better to use a standardized syntax then create my own
+switched because i think it is better to use a standardized syntax then create my own  
+dont know how much better would it be to use a normal language instead of just storing data with some format  
+since I dont know how much logic is involved in real building scripts
 
 ### todo
 - add cli commands to change the break.json file  
@@ -29,3 +31,6 @@ switched because i think it is better to use a standardized syntax then create m
 - add just specifying a source directory  
     so break would just use all the files inside it  
     same for a header directory
+- think of something for include directories  
+    maybe automatically include all directories from 'header_files' variable and from dependencies
+- let the user make custom macros(use of -D compiler flag)

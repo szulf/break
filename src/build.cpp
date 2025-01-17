@@ -1,6 +1,7 @@
 #include "build.hpp"
 #include "json.hpp"
 
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include <sstream>
@@ -172,6 +173,10 @@ auto parse_break_file() -> std::expected<BuildParams, std::string>
 
 // TODO
 // only generate commands for files that have changed
+//
+// TODO
+// check if that rfind for '/'
+// works on windows
 auto build_compile_commands(const BuildParams& params, const std::optional<BuildConfig>& config) -> std::vector<std::string>
 {
     std::vector<std::string> cmds{};
@@ -180,37 +185,49 @@ auto build_compile_commands(const BuildParams& params, const std::optional<Build
     {
         if (src_file.substr(src_file.size() - 2) == ".c")
         {
-            std::string output_file{src_file + ".o"};
-            output_file = output_file.substr(output_file.rfind("/"));
-            output_file = "build/obj" + output_file;
+            std::string output_file{"build/obj" + src_file.substr(src_file.rfind("/")) + ".o"};
 
-            std::string cmd{std::format("{} -c {} {} -o {}", params.c_compiler, params.c_flags, src_file, output_file)};
-
-            if (config)
-            {
-                cmd += " " + config->config_flags;
-            }
-
-            cmds.emplace_back(cmd);
+            cmds.emplace_back(
+                std::format("{} -c {} {} -o {} {}",
+                    params.c_compiler,
+                    params.c_flags,
+                    src_file,
+                    output_file,
+                    config ? config->config_flags : ""
+                )
+            );
         }
         else
         {
-            std::string output_file{src_file + ".o"};
-            output_file = output_file.substr(output_file.rfind("/"));
-            output_file = "build/obj" + output_file;
+            std::string output_file{"build/obj" + src_file.substr(src_file.rfind("/")) + ".o"};
 
-            std::string cmd{std::format("{} -c {} {} -o {}", params.cpp_compiler, params.cpp_flags, src_file, output_file)};
-
-            if (config)
-            {
-                cmd += " " + config->config_flags;
-            }
-
-            cmds.emplace_back(cmd);
+            cmds.emplace_back(
+                std::format("{} -c {} {} -o {} {}",
+                    params.cpp_compiler,
+                    params.cpp_flags,
+                    src_file,
+                    output_file,
+                    config ? config->config_flags : ""
+                )
+            );
         }
     }
 
     return cmds;
+}
+
+// TODO
+// add linking against libraries here later
+auto build_link_command(const BuildParams& params) -> std::string
+{
+    std::string link_cmd{std::format("{} -o {} ", params.cpp_compiler, params.project_name)};
+
+    for (const auto& file : std::filesystem::directory_iterator(std::filesystem::current_path().concat("/build/obj")))
+    {
+        link_cmd += std::format("{} ", file.path().string());
+    }
+
+    return link_cmd;
 }
 
 };

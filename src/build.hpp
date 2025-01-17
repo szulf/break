@@ -33,5 +33,6 @@ struct BuildParams
 
 auto parse_break_file() -> std::expected<BuildParams, std::string>;
 auto build_compile_commands(const BuildParams& params, const std::optional<BuildConfig>& config) -> std::vector<std::string>;
+auto build_link_command(const BuildParams& params) -> std::string;
 
 };
