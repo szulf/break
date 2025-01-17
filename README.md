@@ -1,12 +1,12 @@
 ### basic understanding
 program interprets break.json  
 based on that runs the necessary compilation commands  
-and creates a '.break-cache' file that holds info about last modified change to a file
+and creates a '.break-cache' file that holds info about last modified change to a file  
 defaults to using a cpp compiler unless file has a '.c' ending
 
 ### cli commands
 ` break init project-name `  
-creates a template breakfile
+creates a template break.json file
 
 ` break build `  
 compiles all files
@@ -22,7 +22,10 @@ json
 switched because i think it is better to use a standardized syntax then create my own
 
 ### todo
-- add cli commands to change the breakfile  
+- add cli commands to change the break.json file  
     so it works both as a cli tool and with a config file
 - it should also be able to export compile commands
 - add vcpkg somehow to manage dependencies
+- add just specifying a source directory  
+    so break would just use all the files inside it  
+    same for a header directory

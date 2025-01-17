@@ -1,4 +1,14 @@
 {
     "project_name": "break",
-    "source_files": [ "src/main.cpp" ]
+    "source_files": [ "src/main.cpp", "src/json.cpp" ],
+    "header_files": [ "src/json.hpp" ],
+
+    "cpp_flags": "-std=c++23",
+
+    "configs": [
+        { "debug": "-O0 -Wall -Werror -g" },
+        { "release": "-O3 -DNDEBUG" }
+    ],
+
+    "export_compile_commands": true
 }
